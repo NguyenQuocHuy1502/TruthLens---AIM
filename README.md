@@ -1,70 +1,184 @@
-# Getting Started with Create React App
+# TruthLens - Product Scam Detector
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A Chrome extension that helps users identify legitimate products, potential scams, and uncertain listings on major e-commerce websites.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- 🔍 **Real-time Analysis**: Automatically analyzes products as you browse
+- ✅ **Visual Indicators**: 
+  - Green tick (✓) for legitimate products
+  - Red X (✗) for potential scams
+  - Yellow dots (...) for uncertain status
+- 📊 **Statistics Tracking**: View your daily analysis stats
+- 🛡️ **Multi-site Support**: Works on Amazon, Walmart, eBay, Target, Best Buy, and more
+- 🎨 **Beautiful UI**: Modern, responsive popup interface
 
-### `npm start`
+## Supported Websites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Amazon (all regions)
+- Walmart
+- eBay
+- Target
+- Best Buy
+- Newegg
+- Alibaba
+- AliExpress
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Installation
 
-### `npm test`
+### Development Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. **Clone or download this repository**
+   ```bash
+   git clone <your-repo-url>
+   cd truthlens
+   ```
 
-### `npm run build`
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. **Build the extension**
+   ```bash
+   npm run build:extension
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+4. **Load the extension in Chrome**
+   - Open Chrome and go to `chrome://extensions/`
+   - Enable "Developer mode" (toggle in top right)
+   - Click "Load unpacked"
+   - Select the `build` folder from the truthlens directory
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Production Installation
 
-### `npm run eject`
+1. Build the extension:
+   ```bash
+   npm run build:extension
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2. Zip the `build` folder contents
+3. Submit to Chrome Web Store (when ready for distribution)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## How It Works
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Analysis Algorithm
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The extension uses a scoring system to evaluate products:
 
-## Learn More
+**Scam Indicators (increase scam score):**
+- Suspicious keywords (scam, fake, replica, counterfeit)
+- Suspicious patterns (excessive caps, exclamation marks)
+- Unrealistically low prices
+- Short or overly long product titles
+- Suspicious seller names
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+**Legitimacy Indicators (increase legit score):**
+- Trusted sellers (Amazon, Walmart)
+- Reasonable price ranges
+- Well-structured product titles
+- Established seller profiles
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+**Final Decision:**
+- **Scam** (Red X): Score ≥ 3
+- **Uncertain** (Yellow dots): Score ≥ 2 or legit score < 1
+- **Legitimate** (Green tick): All other cases
 
-### Code Splitting
+### Technical Implementation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **Content Script**: Injects indicators into product listings
+- **Popup Interface**: React-based UI for statistics and controls
+- **Storage**: Tracks daily analysis statistics
+- **Communication**: Real-time updates between content script and popup
 
-### Analyzing the Bundle Size
+## Usage
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1. **Install the extension** following the installation steps above
+2. **Browse supported e-commerce sites** - indicators will appear automatically
+3. **Click the extension icon** to view statistics and controls
+4. **Toggle analysis** on/off as needed
+5. **Check the legend** in the popup to understand the indicators
 
-### Making a Progressive Web App
+## Development
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Project Structure
 
-### Advanced Configuration
+```
+truthlens/
+├── public/
+│   ├── manifest.json          # Extension manifest
+│   ├── content.js            # Content script for product analysis
+│   ├── content.css           # Styles for indicators
+│   └── index.html            # Extension popup HTML
+├── src/
+│   ├── App.js                # React popup component
+│   ├── App.css               # Popup styles
+│   └── index.js              # React entry point
+└── build/                    # Built extension files
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Building
 
-### Deployment
+```bash
+# Development build
+npm run build
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+# Extension build (includes copying files)
+npm run build:extension
+```
 
-### `npm run build` fails to minify
+### Testing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Load the extension in Chrome developer mode
+2. Visit supported e-commerce sites
+3. Verify indicators appear on product listings
+4. Test popup functionality and statistics
+
+## Customization
+
+### Adding New Sites
+
+1. Update `manifest.json` host_permissions and content_scripts matches
+2. Add site configuration in `content.js` siteConfigs object
+3. Define product, title, price, and seller selectors for the new site
+
+### Modifying Analysis Logic
+
+Edit the `analyzeProduct` function in `content.js` to:
+- Add new scam indicators
+- Modify scoring weights
+- Integrate with external APIs
+- Add machine learning models
+
+## Future Enhancements
+
+- [ ] Machine learning integration for better accuracy
+- [ ] User feedback system to improve detection
+- [ ] Integration with review analysis APIs
+- [ ] Price history tracking
+- [ ] Seller reputation checking
+- [ ] Mobile browser support
+- [ ] Additional language support
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+MIT License - see LICENSE file for details
+
+## Disclaimer
+
+This extension provides analysis based on heuristics and patterns. It's not a guarantee of product legitimacy. Always use your best judgment when making purchasing decisions and verify products through official channels when in doubt.
+
+## Support
+
+For issues, feature requests, or questions:
+- Create an issue on GitHub
+- Check the documentation
+- Review the code comments for implementation details

@@ -1,38 +1,290 @@
-.App {
+/* TruthLens Extension Popup Styles */
+.app {
+  width: 350px;
+  min-height: 400px;
+  background: linear-gradient(135deg, #9599ac 0%, #88898b 50%, #5e5a61 100%);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  padding: 20px;
   text-align: center;
+  background: rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.header img {
+  width: 40px;
+  height: 50px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.header-content {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  flex-direction: row;
+  gap: 10px;
+}
+
+.header h1 {
+  margin: 0 0 5px 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.content {
+  padding: 20px;
+}
+
+.status-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+/* Switch control */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(255,255,255,0.35);
+  transition: .2s;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 2px;
+  background-color: white;
+  transition: .2s;
+  border-radius: 50%;
+}
+
+.switch input:checked + .slider {
+  background-color: #4CAF50;
+  border-color: #4CAF50;
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4CAF50;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.toggle-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.stats-section h3,
+.legend-section h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.stat-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.stat-item.legit .stat-icon {
+  background: #4CAF50;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.stat-item.scam .stat-icon {
+  background: #f44336;
+}
+
+.stat-item.uncertain .stat-icon {
+  background: #ff9800;
+}
+
+.stat-number {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.legend-section {
+  margin-bottom: 20px;
+}
+
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.legend-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  font-size: 12px;
+}
+
+.legend-icon.legit {
+  background: #4CAF50;
+}
+
+.legend-icon.scam {
+  background: #f44336;
+}
+
+.legend-icon.uncertain {
+  background: #ff9800;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  text-decoration: none;
+  color: white;
+}
+
+.action-btn.secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.action-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.unsupported {
+  text-align: center;
+  padding: 20px;
+}
+
+.unsupported ul {
+  text-align: left;
+  margin: 15px 0;
+  padding-left: 20px;
+}
+
+.unsupported li {
+  margin: 5px 0;
+  font-size: 14px;
 }
