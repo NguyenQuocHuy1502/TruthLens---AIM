@@ -1,17 +1,82 @@
 # TruthLens - Product Scam Detector
 
-A Chrome extension that helps users identify legitimate products, potential scams, and uncertain listings on major e-commerce websites.
+TruthLens is a browser extension that analyzes products on e-commerce websites to detect potential scams using AI-powered analysis and pattern recognition.
 
 ## Features
 
-- 🔍 **Real-time Analysis**: Automatically analyzes products as you browse
-- ✅ **Visual Indicators**: 
-  - Green tick (✓) for legitimate products
-  - Red X (✗) for potential scams
-  - Yellow dots (...) for uncertain status
-- 📊 **Statistics Tracking**: View your daily analysis stats
-- 🛡️ **Multi-site Support**: Works on Amazon, Walmart, eBay, Target, Best Buy, and more
-- 🎨 **Beautiful UI**: Modern, responsive popup interface
+- 🔍 **Real-time Product Analysis**: Automatically analyzes products as you browse
+- 🤖 **AI-Powered Detection**: Uses AI to detect suspicious content and patterns
+- 📊 **Comprehensive Analysis**: Analyzes title, price, seller, ratings, and reviews
+- 🎯 **Multi-site Support**: Works on Amazon, Walmart, eBay, Target, Best Buy, and more
+- 📈 **Statistics Tracking**: Tracks analysis results across your browsing session
+- 🔄 **Backend Integration**: Connects to a FastAPI backend for advanced analysis
+
+## Architecture
+
+### Frontend (Browser Extension)
+- **React-based popup**: Main extension interface
+- **Content Script**: Extracts product data and displays analysis indicators
+- **API Service**: Communicates with backend for analysis
+
+### Backend (FastAPI Server)
+- **Product Analysis Endpoint**: `/analyze-product` - Analyzes product legitimacy
+- **AI Detection**: Integrates with external AI services for content analysis
+- **Pattern Recognition**: Custom algorithms for detecting scam indicators
+
+## Installation & Setup
+
+### Prerequisites
+- Node.js (v14 or higher)
+- Python 3.8 or higher
+- Chrome/Chromium browser
+
+### Backend Setup
+
+1. **Install Python dependencies**:
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   ```
+
+2. **Start the backend server**:
+   ```bash
+   # From project root
+   python start_backend.py
+   
+   # Or manually
+   cd backend
+   uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+   ```
+
+3. **Verify backend is running**:
+   - Visit http://localhost:8000/docs for API documentation
+   - The server should be accessible at http://localhost:8000
+
+### Frontend Setup
+
+1. **Install dependencies**:
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+2. **Build the extension**:
+   ```bash
+   npm run build:extension
+   ```
+
+3. **Load in Chrome**:
+   - Open Chrome and go to `chrome://extensions/`
+   - Enable "Developer mode"
+   - Click "Load unpacked" and select the `frontend/build` directory
+
+## Usage
+
+1. **Enable the extension** on supported e-commerce sites
+2. **Toggle the switch** in the popup to activate analysis
+3. **Browse products** - TruthLens will automatically analyze visible products
+4. **Click indicators** on products to see detailed analysis results
+5. **View statistics** in the popup to track analysis across your session
 
 ## Supported Websites
 
@@ -24,141 +89,117 @@ A Chrome extension that helps users identify legitimate products, potential scam
 - Alibaba
 - AliExpress
 
-## Installation
+## API Endpoints
 
-### Development Installation
+### POST `/analyze-product`
+Analyzes a product for legitimacy.
 
-1. **Clone or download this repository**
-   ```bash
-   git clone <your-repo-url>
-   cd truthlens
-   ```
+**Request Body**:
+```json
+{
+  "title": "Product Title",
+  "description": "Product Description",
+  "price": "$99.99",
+  "seller": "Seller Name",
+  "rating": "4.5",
+  "reviews_count": "1,234",
+  "url": "https://example.com/product"
+}
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+**Response**:
+```json
+{
+  "success": true,
+  "analysis": {
+    "status": "legit|scam|uncertain",
+    "confidence": 0.85,
+    "reasons": ["Good rating", "Reputable seller"],
+    "indicators": {
+      "scam_indicators": 0,
+      "legit_indicators": 2
+    }
+  },
+  "product_info": {
+    "title": "Product Title",
+    "url": "https://example.com/product"
+  }
+}
+```
 
-3. **Build the extension**
-   ```bash
-   npm run build:extension
-   ```
+### POST `/check-text`
+Legacy endpoint for AI text detection.
 
-4. **Load the extension in Chrome**
-   - Open Chrome and go to `chrome://extensions/`
-   - Enable "Developer mode" (toggle in top right)
-   - Click "Load unpacked"
-   - Select the `build` folder from the truthlens directory
+## Analysis Factors
 
-### Production Installation
+TruthLens analyzes products based on multiple factors:
 
-1. Build the extension:
-   ```bash
-   npm run build:extension
-   ```
-
-2. Zip the `build` folder contents
-3. Submit to Chrome Web Store (when ready for distribution)
-
-## How It Works
-
-### Analysis Algorithm
-
-The extension uses a scoring system to evaluate products:
-
-**Scam Indicators (increase scam score):**
-- Suspicious keywords (scam, fake, replica, counterfeit)
-- Suspicious patterns (excessive caps, exclamation marks)
-- Unrealistically low prices
-- Short or overly long product titles
+### Scam Indicators
+- Suspicious language in titles ("urgent", "limited time", "act now")
+- Unusually low prices
 - Suspicious seller names
+- Very low ratings (< 2.0)
+- Very few reviews (< 5)
 
-**Legitimacy Indicators (increase legit score):**
-- Trusted sellers (Amazon, Walmart)
+### Legitimate Indicators
+- Reputable sellers (Amazon, Walmart, Target)
 - Reasonable price ranges
-- Well-structured product titles
-- Established seller profiles
+- Good ratings (> 4.0)
+- Many reviews (> 100)
 
-**Final Decision:**
-- **Scam** (Red X): Score ≥ 3
-- **Uncertain** (Yellow dots): Score ≥ 2 or legit score < 1
-- **Legitimate** (Green tick): All other cases
+### AI Analysis
+- Detects AI-generated content
+- Analyzes text patterns and authenticity
+- Cross-references with known scam patterns
 
-### Technical Implementation
+## Configuration
 
-- **Content Script**: Injects indicators into product listings
-- **Popup Interface**: React-based UI for statistics and controls
-- **Storage**: Tracks daily analysis statistics
-- **Communication**: Real-time updates between content script and popup
+### Backend Configuration
+- **API Key**: Update `api_private_key` in `backend/main.py`
+- **API Endpoint**: Modify `api_link` to use different AI services
+- **CORS Settings**: Adjust CORS origins in production
 
-## Usage
-
-1. **Install the extension** following the installation steps above
-2. **Browse supported e-commerce sites** - indicators will appear automatically
-3. **Click the extension icon** to view statistics and controls
-4. **Toggle analysis** on/off as needed
-5. **Check the legend** in the popup to understand the indicators
+### Frontend Configuration
+- **Backend URL**: Update `API_BASE_URL` in `frontend/src/services/apiService.js`
+- **Supported Sites**: Modify site configurations in `frontend/public/content.js`
 
 ## Development
 
-### Project Structure
-
-```
-truthlens/
-├── public/
-│   ├── manifest.json          # Extension manifest
-│   ├── content.js            # Content script for product analysis
-│   ├── content.css           # Styles for indicators
-│   └── index.html            # Extension popup HTML
-├── src/
-│   ├── App.js                # React popup component
-│   ├── App.css               # Popup styles
-│   └── index.js              # React entry point
-└── build/                    # Built extension files
-```
-
-### Building
-
+### Backend Development
 ```bash
-# Development build
-npm run build
-
-# Extension build (includes copying files)
-npm run build:extension
+cd backend
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### Testing
+### Frontend Development
+```bash
+cd frontend
+npm start
+```
 
-1. Load the extension in Chrome developer mode
-2. Visit supported e-commerce sites
-3. Verify indicators appear on product listings
-4. Test popup functionality and statistics
+### Extension Development
+```bash
+cd frontend
+npm run build:extension
+# Reload extension in Chrome after changes
+```
 
-## Customization
+## Troubleshooting
 
-### Adding New Sites
+### Backend Issues
+- **Port 8000 in use**: Change port in `start_backend.py` or kill existing process
+- **CORS errors**: Ensure CORS middleware is properly configured
+- **API key errors**: Verify API key is valid and has sufficient credits
 
-1. Update `manifest.json` host_permissions and content_scripts matches
-2. Add site configuration in `content.js` siteConfigs object
-3. Define product, title, price, and seller selectors for the new site
+### Frontend Issues
+- **Extension not loading**: Check Chrome console for errors
+- **Analysis not working**: Verify backend is running and accessible
+- **Products not detected**: Check if site is supported and selectors are correct
 
-### Modifying Analysis Logic
-
-Edit the `analyzeProduct` function in `content.js` to:
-- Add new scam indicators
-- Modify scoring weights
-- Integrate with external APIs
-- Add machine learning models
-
-## Future Enhancements
-
-- [ ] Machine learning integration for better accuracy
-- [ ] User feedback system to improve detection
-- [ ] Integration with review analysis APIs
-- [ ] Price history tracking
-- [ ] Seller reputation checking
-- [ ] Mobile browser support
-- [ ] Additional language support
+### Common Issues
+1. **Backend disconnected**: Start backend server with `python start_backend.py`
+2. **No analysis results**: Check browser console for API errors
+3. **Products not showing indicators**: Ensure extension is enabled and site is supported
 
 ## Contributing
 
@@ -170,15 +211,12 @@ Edit the `analyzeProduct` function in `content.js` to:
 
 ## License
 
-MIT License - see LICENSE file for details
-
-## Disclaimer
-
-This extension provides analysis based on heuristics and patterns. It's not a guarantee of product legitimacy. Always use your best judgment when making purchasing decisions and verify products through official channels when in doubt.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Support
 
-For issues, feature requests, or questions:
-- Create an issue on GitHub
-- Check the documentation
-- Review the code comments for implementation details
+For issues and questions:
+- Check the troubleshooting section
+- Review the API documentation at http://localhost:8000/docs
+- Open an issue on GitHub
+

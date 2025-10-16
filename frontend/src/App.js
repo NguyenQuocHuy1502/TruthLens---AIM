@@ -10,9 +10,26 @@ function App() {
   const [stats, setStats] = useState({ legit: 0, scam: 0, uncertain: 0 });
   const [showSettings, setShowSettings] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [backendConnected, setBackendConnected] = useState(false);
 
+
+  // Test backend connection
+  const testBackendConnection = async () => {
+    try {
+      await fetch('http://localhost:8000/docs', { 
+        method: 'HEAD',
+        mode: 'no-cors' // This will work even if CORS is not properly configured
+      });
+      setBackendConnected(true);
+    } catch (error) {
+      console.error('Backend connection failed:', error);
+      setBackendConnected(false);
+    }
+  };
 
   useEffect(() => {
+    // Test backend connection
+    testBackendConnection();
 
     window.chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (!tabs || !tabs[0]) return;
@@ -31,7 +48,6 @@ function App() {
       window.chrome.tabs.sendMessage(tabs[0].id, { type: 'GET_ACTIVE' }, (res) => {
         if (res && typeof res.active === 'boolean') setActive(res.active);
       });
-
 
       try {
         window.chrome.storage?.local?.get(['truthlens_stats'], (result) => {
@@ -117,6 +133,18 @@ function App() {
           </label>
         </div>
 
+        <div className="backend-status">
+          <div className="status-indicator">
+            <span className="status-dot" style={{ background: backendConnected ? '#4CAF50' : '#f44336' }}></span>
+            Backend: {backendConnected ? 'Connected' : 'Disconnected'}
+          </div>
+          {!backendConnected && (
+            <p className="backend-warning">
+              ⚠️ Backend server not running. Analysis will use fallback mode.
+            </p>
+          )}
+        </div>
+
         <div className="stats-section">
           <h3>Website's Analysis</h3>
           <div className="stats-grid">
@@ -166,14 +194,12 @@ function App() {
           <button className="action-btn" onClick={() => setShowSettings(true)}>
             Settings
           </button>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
             className="action-btn secondary"
             onClick={() => setShowInfo(true)}
           >
             Information
-          </a>
+          </button>
         </div>
       </div>
     </div>
